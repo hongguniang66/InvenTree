@@ -50,6 +50,7 @@ import InvenTree.ready
 import InvenTree.tasks
 import InvenTree.validators
 import order.validators
+import report.helpers
 from plugin import registry
 
 logger = logging.getLogger('inventree')
@@ -204,6 +205,12 @@ class BaseInvenTreeSetting(models.Model):
         If a particular setting is not present, create it with the default value
         """
 
+        cache_key = f"BUILD_DEFAULT_VALUES:{str(cls.__name__)}"
+
+        if InvenTree.helpers.str2bool(cache.get(cache_key, False)):
+            # Already built default values
+            return
+
         try:
             existing_keys = cls.objects.filter(**kwargs).values_list('key', flat=True)
             settings_keys = cls.SETTINGS.keys()
@@ -222,6 +229,8 @@ class BaseInvenTreeSetting(models.Model):
         except Exception as exc:
             logger.exception("Failed to build default values for %s (%s)", str(cls), str(type(exc)))
             pass
+
+        cache.set(cache_key, True, timeout=3600)
 
     def _call_settings_function(self, reference: str, args, kwargs):
         """Call a function associated with a particular setting.
@@ -1240,7 +1249,7 @@ class InvenTreeSetting(BaseInvenTreeSetting):
 
         'BARCODE_ENABLE': {
             'name': _('Barcode Support'),
-            'description': _('Enable barcode scanner support'),
+            'description': _('Enable barcode scanner support in the web interface'),
             'default': True,
             'validator': bool,
         },
@@ -1543,11 +1552,7 @@ class InvenTreeSetting(BaseInvenTreeSetting):
             'name': _('Page Size'),
             'description': _('Default page size for PDF reports'),
             'default': 'A4',
-            'choices': [
-                ('A4', 'A4'),
-                ('Legal', 'Legal'),
-                ('Letter', 'Letter')
-            ],
+            'choices': report.helpers.report_page_size_options,
         },
 
         'REPORT_ENABLE_TEST_REPORT': {

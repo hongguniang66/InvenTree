@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useCallback, useState } from 'react';
 
 import { api } from '../App';
+import { ApiPaths, apiUrl } from '../states/ApiState';
 
 /**
  * Custom hook for loading a single instance of an instance from the API
@@ -12,23 +13,29 @@ import { api } from '../App';
  * To use this hook:
  * const { instance, refreshInstance } = useInstance(url: string, pk: number)
  */
-export function useInstance(
-  url: string,
-  pk: string | undefined,
-  params: any = {}
-) {
+export function useInstance({
+  endpoint,
+  pk,
+  params = {}
+}: {
+  endpoint: ApiPaths;
+  pk: string | undefined;
+  params?: any;
+}) {
   const [instance, setInstance] = useState<any>({});
 
   const instanceQuery = useQuery({
-    queryKey: ['instance', url, pk, params],
+    queryKey: ['instance', endpoint, pk, params],
     queryFn: async () => {
       if (pk == null || pk == undefined || pk.length == 0) {
         setInstance({});
         return null;
       }
 
+      let url = apiUrl(endpoint, pk);
+
       return api
-        .get(url + pk + '/', {
+        .get(url, {
           params: params
         })
         .then((response) => {
@@ -43,7 +50,7 @@ export function useInstance(
         })
         .catch((error) => {
           setInstance({});
-          console.error(`Error fetching instance ${url}${pk}:`, error);
+          console.error(`Error fetching instance ${url}:`, error);
           return null;
         });
     },
