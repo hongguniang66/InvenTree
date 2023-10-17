@@ -7,10 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { openCreateApiForm, openDeleteApiForm } from '../../../functions/forms';
 import { useTableRefresh } from '../../../hooks/TableRefresh';
 import { ApiPaths, apiUrl } from '../../../states/ApiState';
-import { Thumbnail } from '../../items/Thumbnail';
+import { Thumbnail } from '../../images/Thumbnail';
 import { TableColumn } from '../Column';
 import { InvenTreeTable } from '../InvenTreeTable';
 
+/**
+ * Construct a table listing related parts for a given part
+ */
 export function RelatedPartTable({ partId }: { partId: number }): ReactNode {
   const { tableKey, refreshTable } = useTableRefresh('relatedparts');
 
@@ -35,6 +38,8 @@ export function RelatedPartTable({ partId }: { partId: number }): ReactNode {
           let part = getPart(record);
           return (
             <Group
+              noWrap={true}
+              position="left"
               onClick={() => {
                 navigate(`/part/${part.pk}/`);
               }}
@@ -54,7 +59,7 @@ export function RelatedPartTable({ partId }: { partId: number }): ReactNode {
         }
       }
     ];
-  }, []);
+  }, [partId]);
 
   const addRelatedPart = useCallback(() => {
     openCreateApiForm({
@@ -73,7 +78,7 @@ export function RelatedPartTable({ partId }: { partId: number }): ReactNode {
       successMessage: t`Related part added`,
       onFormSuccess: refreshTable
     });
-  }, []);
+  }, [partId]);
 
   const customActions: ReactNode[] = useMemo(() => {
     // TODO: Hide if user does not have permission to edit parts

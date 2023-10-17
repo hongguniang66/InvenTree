@@ -49,6 +49,8 @@ export enum ApiPaths {
   category_list = 'api-category-list',
   related_part_list = 'api-related-part-list',
   part_attachment_list = 'api-part-attachment-list',
+  part_parameter_list = 'api-part-parameter-list',
+  part_parameter_template_list = 'api-part-parameter-template-list',
 
   // Company URLs
   company_list = 'api-company-list',
@@ -63,7 +65,13 @@ export enum ApiPaths {
   purchase_order_list = 'api-purchase-order-list',
 
   // Sales Order URLs
-  sales_order_list = 'api-sales-order-list'
+  sales_order_list = 'api-sales-order-list',
+
+  // Plugin URLs
+  plugin_list = 'api-plugin-list',
+
+  project_code_list = 'api-project-code-list',
+  custom_unit_list = 'api-custom-unit-list'
 }
 
 /**
@@ -111,6 +119,10 @@ export function apiEndpoint(path: ApiPaths): string {
       return 'build/attachment/';
     case ApiPaths.part_list:
       return 'part/';
+    case ApiPaths.part_parameter_list:
+      return 'part/parameter/';
+    case ApiPaths.part_parameter_template_list:
+      return 'part/parameter/template/';
     case ApiPaths.category_list:
       return 'part/category/';
     case ApiPaths.related_part_list:
@@ -131,7 +143,12 @@ export function apiEndpoint(path: ApiPaths): string {
       return 'order/po/';
     case ApiPaths.sales_order_list:
       return 'order/so/';
-
+    case ApiPaths.plugin_list:
+      return 'plugins/';
+    case ApiPaths.project_code_list:
+      return 'project-code/';
+    case ApiPaths.custom_unit_list:
+      return 'units/';
     default:
       return '';
   }

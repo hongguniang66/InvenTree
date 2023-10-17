@@ -109,7 +109,7 @@ export default function BuildDetail() {
         icon: <IconPaperclip size="18" />,
         content: (
           <AttachmentTable
-            url={ApiPaths.build_order_attachment_list}
+            endpoint={ApiPaths.build_order_attachment_list}
             model="build"
             pk={build.pk ?? -1}
           />
@@ -148,7 +148,7 @@ export default function BuildDetail() {
           actions={[<PlaceholderPill key="1" />]}
         />
         <LoadingOverlay visible={instanceQuery.isFetching} />
-        <PanelGroup panels={buildPanels} />
+        <PanelGroup pageKey="build" panels={buildPanels} />
       </Stack>
     </>
   );
